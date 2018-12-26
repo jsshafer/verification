@@ -1,0 +1,493 @@
+MODULE main
+  VAR
+    policy	: {policy_11,policy_7,policy_5,policy_13,policy_6,policy_1,drop,policy_8,policy_12,policy_2,policy_10,policy_4,policy_9,policy_3,policy_15,policy_14};
+    rate	: {1,2,3};
+    authenticated_1x	: boolean;
+    infected	: boolean;
+    authenticated_web	: boolean;
+  ASSIGN
+    init(policy) := drop;
+    init(rate) := 1;
+    init(authenticated_1x) := FALSE;
+    init(infected) := FALSE;
+    init(authenticated_web) := FALSE;
+    next(policy) :=
+	case
+		authenticated_web & authenticated_1x & infected & (rate=3)	: drop;
+		authenticated_web & authenticated_1x & infected & (rate=2)	: drop;
+		authenticated_web & authenticated_1x & infected & (rate=1)	: drop;
+		authenticated_1x & infected & (rate=3)	: drop;
+		authenticated_web & authenticated_1x & (rate=2)	: policy_14;
+		authenticated_1x & infected & (rate=2)	: drop;
+		authenticated_web & authenticated_1x & (rate=1)	: policy_13;
+		authenticated_web & infected & (rate=1)	: drop;
+		authenticated_web & infected & (rate=2)	: drop;
+		authenticated_web & authenticated_1x & infected	: drop;
+		authenticated_1x & infected & (rate=1)	: drop;
+		authenticated_web & infected & (rate=3)	: drop;
+		authenticated_web & authenticated_1x & (rate=3)	: policy_15;
+		infected & (rate=1)	: drop;
+		authenticated_1x & (rate=2)	: policy_6;
+		infected & (rate=2)	: drop;
+		infected & (rate=3)	: drop;
+		authenticated_web & authenticated_1x	: policy_13;
+		authenticated_web & (rate=2)	: policy_10;
+		authenticated_web & (rate=1)	: policy_9;
+		authenticated_1x & infected	: drop;
+		authenticated_1x & (rate=3)	: policy_7;
+		authenticated_1x & (rate=1)	: policy_5;
+		authenticated_web & (rate=3)	: policy_11;
+		authenticated_web & infected	: drop;
+		authenticated_web	: policy_9;
+		(rate=3)	: drop;
+		(rate=1)	: drop;
+		infected	: drop;
+		authenticated_1x	: policy_5;
+		(rate=2)	: drop;
+		TRUE	: drop;
+	esac;
+    next(rate) :=
+	case
+		TRUE	: {1,2,3};
+		TRUE	: rate;
+	esac;
+    next(authenticated_1x) :=
+	case
+		TRUE	: {FALSE,TRUE};
+		TRUE	: authenticated_1x;
+	esac;
+    next(infected) :=
+	case
+		TRUE	: {FALSE,TRUE};
+		TRUE	: infected;
+	esac;
+    next(authenticated_web) :=
+	case
+		TRUE	: {FALSE,TRUE};
+		TRUE	: authenticated_web;
+	esac;
+--  
+-- 
+-- =====================================================================
+-- PolicyName (used in NuSMV) to ActualPolicy (used in Pyretic) Mapping
+-- =====================================================================
+-- ---------------------------------------------
+-- policy_1: (shown below)
+-- ---------------------------------------------
+-- parallel:
+--     drop
+--     identity
+-- ---------------------------------------------
+-- 
+-- ---------------------------------------------
+-- policy_10: (shown below)
+-- ---------------------------------------------
+-- sequential:
+--     parallel:
+--         identity
+--         drop
+--     if
+--         intersection:
+--             union:
+--                 match: ('switch', 1)
+--                 match: ('switch', 5)
+--             match: ('inport', 1)
+--     then
+--         fwd 3
+--     else
+--         if
+--             union:
+--                 match: ('switch', 2)
+--                 match: ('switch', 3)
+--                 match: ('switch', 4)
+--         then
+--             if
+--                 match: ('inport', 2)
+--             then
+--                 fwd 1
+--             else
+--                 fwd 2
+--         else
+--             if
+--                 union:
+--                     match: ('inport', 2)
+--                     match: ('inport', 3)
+--                     match: ('inport', 4)
+--             then
+--                 fwd 1
+--             else
+--                 drop
+-- ---------------------------------------------
+-- 
+-- ---------------------------------------------
+-- policy_11: (shown below)
+-- ---------------------------------------------
+-- sequential:
+--     parallel:
+--         identity
+--         drop
+--     if
+--         intersection:
+--             union:
+--                 match: ('switch', 1)
+--                 match: ('switch', 5)
+--             match: ('inport', 1)
+--     then
+--         fwd 4
+--     else
+--         if
+--             union:
+--                 match: ('switch', 2)
+--                 match: ('switch', 3)
+--                 match: ('switch', 4)
+--         then
+--             if
+--                 match: ('inport', 2)
+--             then
+--                 fwd 1
+--             else
+--                 fwd 2
+--         else
+--             if
+--                 union:
+--                     match: ('inport', 2)
+--                     match: ('inport', 3)
+--                     match: ('inport', 4)
+--             then
+--                 fwd 1
+--             else
+--                 drop
+-- ---------------------------------------------
+-- 
+-- ---------------------------------------------
+-- policy_12: (shown below)
+-- ---------------------------------------------
+-- sequential:
+--     parallel:
+--         identity
+--         identity
+-- ---------------------------------------------
+-- 
+-- ---------------------------------------------
+-- policy_13: (shown below)
+-- ---------------------------------------------
+-- sequential:
+--     parallel:
+--         identity
+--         identity
+--     if
+--         intersection:
+--             union:
+--                 match: ('switch', 1)
+--                 match: ('switch', 5)
+--             match: ('inport', 1)
+--     then
+--         fwd 2
+--     else
+--         if
+--             union:
+--                 match: ('switch', 2)
+--                 match: ('switch', 3)
+--                 match: ('switch', 4)
+--         then
+--             if
+--                 match: ('inport', 2)
+--             then
+--                 fwd 1
+--             else
+--                 fwd 2
+--         else
+--             if
+--                 union:
+--                     match: ('inport', 2)
+--                     match: ('inport', 3)
+--                     match: ('inport', 4)
+--             then
+--                 fwd 1
+--             else
+--                 drop
+-- ---------------------------------------------
+-- 
+-- ---------------------------------------------
+-- policy_14: (shown below)
+-- ---------------------------------------------
+-- sequential:
+--     parallel:
+--         identity
+--         identity
+--     if
+--         intersection:
+--             union:
+--                 match: ('switch', 1)
+--                 match: ('switch', 5)
+--             match: ('inport', 1)
+--     then
+--         fwd 3
+--     else
+--         if
+--             union:
+--                 match: ('switch', 2)
+--                 match: ('switch', 3)
+--                 match: ('switch', 4)
+--         then
+--             if
+--                 match: ('inport', 2)
+--             then
+--                 fwd 1
+--             else
+--                 fwd 2
+--         else
+--             if
+--                 union:
+--                     match: ('inport', 2)
+--                     match: ('inport', 3)
+--                     match: ('inport', 4)
+--             then
+--                 fwd 1
+--             else
+--                 drop
+-- ---------------------------------------------
+-- 
+-- ---------------------------------------------
+-- policy_15: (shown below)
+-- ---------------------------------------------
+-- sequential:
+--     parallel:
+--         identity
+--         identity
+--     if
+--         intersection:
+--             union:
+--                 match: ('switch', 1)
+--                 match: ('switch', 5)
+--             match: ('inport', 1)
+--     then
+--         fwd 4
+--     else
+--         if
+--             union:
+--                 match: ('switch', 2)
+--                 match: ('switch', 3)
+--                 match: ('switch', 4)
+--         then
+--             if
+--                 match: ('inport', 2)
+--             then
+--                 fwd 1
+--             else
+--                 fwd 2
+--         else
+--             if
+--                 union:
+--                     match: ('inport', 2)
+--                     match: ('inport', 3)
+--                     match: ('inport', 4)
+--             then
+--                 fwd 1
+--             else
+--                 drop
+-- ---------------------------------------------
+-- 
+-- ---------------------------------------------
+-- policy_2: (shown below)
+-- ---------------------------------------------
+-- parallel:
+--     identity
+--     drop
+-- ---------------------------------------------
+-- 
+-- ---------------------------------------------
+-- policy_3: (shown below)
+-- ---------------------------------------------
+-- parallel:
+--     identity
+--     identity
+-- ---------------------------------------------
+-- 
+-- ---------------------------------------------
+-- policy_4: (shown below)
+-- ---------------------------------------------
+-- sequential:
+--     parallel:
+--         drop
+--         identity
+-- ---------------------------------------------
+-- 
+-- ---------------------------------------------
+-- policy_5: (shown below)
+-- ---------------------------------------------
+-- sequential:
+--     parallel:
+--         drop
+--         identity
+--     if
+--         intersection:
+--             union:
+--                 match: ('switch', 1)
+--                 match: ('switch', 5)
+--             match: ('inport', 1)
+--     then
+--         fwd 2
+--     else
+--         if
+--             union:
+--                 match: ('switch', 2)
+--                 match: ('switch', 3)
+--                 match: ('switch', 4)
+--         then
+--             if
+--                 match: ('inport', 2)
+--             then
+--                 fwd 1
+--             else
+--                 fwd 2
+--         else
+--             if
+--                 union:
+--                     match: ('inport', 2)
+--                     match: ('inport', 3)
+--                     match: ('inport', 4)
+--             then
+--                 fwd 1
+--             else
+--                 drop
+-- ---------------------------------------------
+-- 
+-- ---------------------------------------------
+-- policy_6: (shown below)
+-- ---------------------------------------------
+-- sequential:
+--     parallel:
+--         drop
+--         identity
+--     if
+--         intersection:
+--             union:
+--                 match: ('switch', 1)
+--                 match: ('switch', 5)
+--             match: ('inport', 1)
+--     then
+--         fwd 3
+--     else
+--         if
+--             union:
+--                 match: ('switch', 2)
+--                 match: ('switch', 3)
+--                 match: ('switch', 4)
+--         then
+--             if
+--                 match: ('inport', 2)
+--             then
+--                 fwd 1
+--             else
+--                 fwd 2
+--         else
+--             if
+--                 union:
+--                     match: ('inport', 2)
+--                     match: ('inport', 3)
+--                     match: ('inport', 4)
+--             then
+--                 fwd 1
+--             else
+--                 drop
+-- ---------------------------------------------
+-- 
+-- ---------------------------------------------
+-- policy_7: (shown below)
+-- ---------------------------------------------
+-- sequential:
+--     parallel:
+--         drop
+--         identity
+--     if
+--         intersection:
+--             union:
+--                 match: ('switch', 1)
+--                 match: ('switch', 5)
+--             match: ('inport', 1)
+--     then
+--         fwd 4
+--     else
+--         if
+--             union:
+--                 match: ('switch', 2)
+--                 match: ('switch', 3)
+--                 match: ('switch', 4)
+--         then
+--             if
+--                 match: ('inport', 2)
+--             then
+--                 fwd 1
+--             else
+--                 fwd 2
+--         else
+--             if
+--                 union:
+--                     match: ('inport', 2)
+--                     match: ('inport', 3)
+--                     match: ('inport', 4)
+--             then
+--                 fwd 1
+--             else
+--                 drop
+-- ---------------------------------------------
+-- 
+-- ---------------------------------------------
+-- policy_8: (shown below)
+-- ---------------------------------------------
+-- sequential:
+--     parallel:
+--         identity
+--         drop
+-- ---------------------------------------------
+-- 
+-- ---------------------------------------------
+-- policy_9: (shown below)
+-- ---------------------------------------------
+-- sequential:
+--     parallel:
+--         identity
+--         drop
+--     if
+--         intersection:
+--             union:
+--                 match: ('switch', 1)
+--                 match: ('switch', 5)
+--             match: ('inport', 1)
+--     then
+--         fwd 2
+--     else
+--         if
+--             union:
+--                 match: ('switch', 2)
+--                 match: ('switch', 3)
+--                 match: ('switch', 4)
+--         then
+--             if
+--                 match: ('inport', 2)
+--             then
+--                 fwd 1
+--             else
+--                 fwd 2
+--         else
+--             if
+--                 union:
+--                     match: ('inport', 2)
+--                     match: ('inport', 3)
+--                     match: ('inport', 4)
+--             then
+--                 fwd 1
+--             else
+--                 drop
+-- ---------------------------------------------
+-- 
+-- 
+FAIRNESS
+  authenticated_web;
+FAIRNESS
+  authenticated_1x;
+FAIRNESS
+  infected;
+SPEC AG (infected -> AX policy=drop)
+SPEC AG ( (authenticated_web | authenticated_1x) & !infected -> AX policy!=drop )
